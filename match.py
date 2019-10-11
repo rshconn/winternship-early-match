@@ -88,18 +88,20 @@ def mutual_match(companies, students):
                     else:
                             available_companies.append(company)
                 else:
-                    print(f'Cannot match {student}')
+                    print('hello')
+                    # print(f"Cannot match {student}")
                     unmatched_students.append(student)
                     available_companies.append(company)
             else:
-                print(f'Cannot match {company.name}')
+                print('goodbye')
+                # print(f'Cannot match {company.name}')
                 unmatched_companies.append(company)
 
         companies = available_companies
                 
     return matches, unmatched_companies, unmatched_students
 
-# TODO: Companies should get at least 1 student
+
 def unilateral_match(unmatched_students, unmatched_companies):
     """
     Parameters
@@ -109,7 +111,7 @@ def unilateral_match(unmatched_students, unmatched_companies):
 
     Returns
     -------
-    dict
+    dict, list of Company, list of Student
     """
     matches = {}
     for company in unmatched_companies:
@@ -121,5 +123,8 @@ def unilateral_match(unmatched_students, unmatched_companies):
                     break
             print()
         else: 
-            print(f'{company.name} ')
+            print('world')
+            # print(f'{company.name} ')
+    
+    return matches, unmatched_companies, unmatched_students
 
