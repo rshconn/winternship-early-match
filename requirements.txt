@@ -64,7 +64,7 @@ mccabe==0.6.1
 mercurial==4.2.3
 more-itertools==5.0.0
 packaging==19.2
-paramiko==1.15.1
+paramiko==2.0.9
 parso==0.1.1
 pathlib2==2.3.5
 pbr==5.4.3
