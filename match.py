@@ -63,7 +63,7 @@ def mutual_match(companies, students):
     matches = {}
     unmatched_companies = []
     unmatched_students = []
-   
+    import sys; print(sys.version)
     while len(companies) > 0:
         available_companies = []
         
@@ -88,7 +88,7 @@ def mutual_match(companies, students):
                     else:
                             available_companies.append(company)
                 else:
-                    print(f'Cannot match {student}')
+                    print(f"Cannot match {student}")
                     unmatched_students.append(student)
                     available_companies.append(company)
             else:
@@ -99,7 +99,7 @@ def mutual_match(companies, students):
                 
     return matches, unmatched_companies, unmatched_students
 
-# TODO: Companies should get at least 1 student
+
 def unilateral_match(unmatched_students, unmatched_companies):
     """
     Parameters
@@ -109,7 +109,7 @@ def unilateral_match(unmatched_students, unmatched_companies):
 
     Returns
     -------
-    dict
+    dict, list of Company, list of Student
     """
     matches = {}
     for company in unmatched_companies:
@@ -122,4 +122,6 @@ def unilateral_match(unmatched_students, unmatched_companies):
             print()
         else: 
             print(f'{company.name} ')
+    
+    return matches, unmatched_companies, unmatched_students
 
