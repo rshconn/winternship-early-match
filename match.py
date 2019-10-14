@@ -158,30 +158,32 @@ def mutual_match(companies, students):
     return matches, unmatched_companies, unmatched_students
 
 
-def unilateral_match(unmatched_companies, unmatched_students):
+def unilateral_match(unmatched_companies, unmatched_students, num_matches):
     """Match unmatched students with companies that have ranked those students
     
     Parameters
     ----------
     unmatched_companies : list of Company
     unmatched_students : list of Student
+    num_matches : dict
+        {Company: # of existing matches}
 
     Returns
     -------
     dict, list of Company, list of Student
     """
-    matches = {}
+    matches = {}    # {Student: Company}
     for company in unmatched_companies:
-        if len(company.matches) < 1:
-            for student in company.ranked_students:
-                if student in unmatched_students:
-                    matches[student] = company.name
-                    company.matches.append(student)
-                    unmatched_students.remove(student)
-                    unmatched_companies.remove(company)
-                    break
-            print(f'No unmatched students available for {company.name}')
-        else: 
+        if num_matches[company] < 1:
+            student = find_first_available_student(company.ranked_students, unmatched_students)
+            if student:
+                matches[student] = company
+                unmatched_students.remove(student)
+                unmatched_companies.remove(company)
+            else:
+                print(f'No unmatched students available for {company.name}')
+        else:
+            unmatched_companies.remove(company)
             print(f'{company.name} has {len(company.matches)}')
     
     return matches, unmatched_companies, unmatched_students

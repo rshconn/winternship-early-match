@@ -98,47 +98,50 @@ def test_more_than_one_mutual_match():
     assert unmatched_companies == []
     assert unmatched_students == [student_3]
 
-# def test_unilateral_match():
-#     unmatched_companies = [
-#         Company('AA', 1, ['0', '1']),
-#     ]
+def test_unilateral_match():
+    co_AA = Company('AA', 1, ['0', '1'])
+    companies = [co_AA]
     
-#     unmatched_students = [
-#         Student('0', '0', ['A', 'B']),
-#         Student('1', '1', ['B', 'A'])
-#     ]
+    student_0 = Student('0', '0', ['A', 'B'])
+    student_1 = Student('1', '1', ['B', 'A'])
+    students = [student_0, student_1]   
     
-#     matches, unmatched_companies, unmatched_students = unilateral_match(
-#         unmatched_companies, unmatched_students)
+    num_matches = {co_AA: 0}
+    
+    matches, unmatched_companies, unmatched_students = unilateral_match(
+        companies, students, num_matches)
         
-#     assert matches == {}
-#     assert unmatched_companies == []
-#     assert unmatched_students == []
+    assert matches == {student_0: co_AA}
+    assert unmatched_companies == []
+    assert unmatched_students == [student_1]
 
 
-# def test_unilateral_match_unmatched_company():
-#     unmatched_companies = [
-#         Company('AA', 1, ['0', '1']),
-#     ]
+def test_unilateral_match_unmatched_company():
+    co_AA = Company('AA', 1, ['0', '1'])
+    companies = [co_AA]
+ 
+    students = []
+    num_matches = {co_AA: 0}
     
-#     unmatched_students = []
-    
-#     matches, unmatched_companies, unmatched_students = unilateral_match(
-#         unmatched_companies, unmatched_students)
+    matches, unmatched_companies, unmatched_students = unilateral_match(
+        companies, students, num_matches)
         
-#     assert matches == {}
-#     assert unmatched_companies == [ Company('AA', 1, ['0', '1'])]
-#     assert unmatched_students == []
+    assert matches == {}
+    assert unmatched_companies == [co_AA]
+    assert unmatched_students == []
 
 
-# def test_unilateral_match_unmatched_student():
-#     unmatched_companies = []
+def test_unilateral_match_unmatched_student():
+    companies = []
     
-#     unmatched_students = [Student('0', '0', ['A', 'B'])]
+    student_0 = Student('0', '0', ['A', 'B'])
+    students = [student_0]
     
-#     matches, unmatched_companies, unmatched_students = unilateral_match(
-#         unmatched_companies, unmatched_students)
-        
-#     assert matches == {}
-#     assert unmatched_companies == []
-#     assert unmatched_students == [Student('0', '0', ['A', 'B'])]
+    co_AA = Company('AA', 1, ['0', '1'])
+    num_matches = {co_AA: 0}
+    
+    matches, unmatched_companies, unmatched_students = unilateral_match(
+        companies, students, num_matches)
+    assert matches == {}
+    assert unmatched_companies == []
+    assert unmatched_students == [student_0]
