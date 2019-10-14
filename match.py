@@ -1,3 +1,5 @@
+from collections import Counter
+
 class Company:
     def __init__(self, name, max_matches, ranked_students):
         """
@@ -11,7 +13,6 @@ class Company:
         self.name = name
         self.max_matches = max_matches
         self.ranked_students = ranked_students
-        self.matches = []
 
 class Student:
     def __init__(self, name, unique_id, ranked_companies):
@@ -46,7 +47,6 @@ def find_first_available_student(ranked_students, available_students):
             return student
     return None
 
-
 def find_first_available_company(ranked_companies, available_companies):
     """
     Parameters
@@ -64,7 +64,38 @@ def find_first_available_company(ranked_companies, available_companies):
              return company
     return None
 
+def company_can_be_matched(company, available_students):
+    """
+    Parameters
+    ----------
+    company : Company 
+    available_students : list of Student
+    
+    Returns
+    -------
+    bool
+    """
+    for student in available_students:
+        if company.name in student.ranked_companies:
+            return True
+    return False
 
+
+def company_has_max_matches(company, matches):
+    """
+    Parameters
+    ----------
+    company : Company
+    matches : dict
+    
+    Returns
+    -------
+    bool 
+    """
+    num_matches = Counter(matches.values())
+    return num_matches[company] >= company.max_matches
+    
+    
 def mutual_match(companies, students):
     """
     Parameters
@@ -76,42 +107,54 @@ def mutual_match(companies, students):
     -------
     dict, list of Company, list of Student
     """
-    matches = {}
+    matches = {}    # {Student : Company}
     unmatched_companies = []
     unmatched_students = []
     while len(companies) > 0:
         available_companies = []
         
         for company in companies:
-            student = find_first_available_student(company.ranked_students, students)
-            
-            if student:
-                company_choice = find_first_available_company(student.ranked_companies, companies)
-
-                if company_choice:
-                    if company.name == company_choice.name:
-
-                        # Assign student to company
-                        matches[student] = company.name
-                        company.matches.append(student)
-
+            if company_can_be_matched(company, students):
+                student = find_first_available_student(company.ranked_students, students)
+                
+                if student:
+                    company_choice = find_first_available_company(student.ranked_companies, companies)
+    
+                    if company_choice:
+                        if company.name == company_choice.name:
+    
+                            # Assign student to company
+                            matches[student] = company
+    
+                            # Remove student from matching pool
+                            students.remove(student)
+                            
+                            # If company still has open spots
+                            if not company_has_max_matches(company, matches):
+                                available_companies.append(company)
+                                
+                        else:   # Student's first available choice is not company
+                                available_companies.append(company)
+    
+                    else:   # None of student's ranked companies remain
+                        print(f"Cannot match {student}")
                         # Remove student from matching pool
-                        del students[student]
-
-                        if len(company.matches) < company.max_matches:
-                            available_companies.append(company)
-                    else:   # Student's first available choice is not company
-                            available_companies.append(company)
-                else:   # None of student's ranked companies remain
-                    print(f"Cannot match {student}")
-                    unmatched_students.append(student)
-                    available_companies.append(company)
-            else:   # None of company's ranked students remain
+                        students.remove(student)
+                        unmatched_students.append(student)
+                        available_companies.append(company)
+    
+                else:   # None of company's ranked students remain
+                    print(f'Cannot match {company.name}')
+                    unmatched_companies.append(company)
+                    
+            else:   # None of company's remaining ranked students have ranked them
                 print(f'Cannot match {company.name}')
                 unmatched_companies.append(company)
+                
 
         companies = available_companies
-                
+    # Add any remaining students
+    unmatched_students = unmatched_students + students
     return matches, unmatched_companies, unmatched_students
 
 
