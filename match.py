@@ -15,7 +15,7 @@ class Company:
         self.ranked_students = ranked_students
 
 class Student:
-    def __init__(self, name, unique_id, ranked_companies):
+    def __init__(self, name, ranked_companies):
         """
         Parameters
         ----------
@@ -25,7 +25,6 @@ class Student:
             In order list of the names of ranked companies 
         """
         self.name = name
-        self.unique_id = unique_id
         self.ranked_companies = ranked_companies
 
 
@@ -41,8 +40,8 @@ def find_first_available_student(ranked_students, available_students):
     Student or None
 
     """
-    for student_id in ranked_students:
-        student = next((student for student in available_students if student.unique_id == student_id), None)
+    for student_name in ranked_students:
+        student = next((student for student in available_students if student.name == student_name), None)
         if student:
             return student
     return None

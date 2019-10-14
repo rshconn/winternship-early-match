@@ -10,9 +10,9 @@ def test_find_first_available_company():
     
 def test_find_first_available_student():
     ranked_students = ['000', '111']
-    student_to_find = Student('111', '111', ['B', 'A'])
+    student_to_find = Student('111', ['B', 'A'])
     available_students = [
-        Student('222', '222', ['A', 'B']),
+        Student('222', ['A', 'B']),
         student_to_find
     ]
     student = find_first_available_student(ranked_students, available_students)
@@ -20,22 +20,22 @@ def test_find_first_available_student():
 
 def test_company_can_be_matched_true():
     company = Company('A', 1, ['0', '1'])
-    available_students = [Student('0', '0', ['C', 'B', 'A'])]
+    available_students = [Student('0', ['C', 'B', 'A'])]
     assert company_can_be_matched(company, available_students)
     
 def test_company_can_be_matched_false():
     company = Company('A', 1, ['0', '1'])
-    available_students = [Student('0', '0', ['C', 'B'])]
+    available_students = [Student('0', ['C', 'B'])]
     assert not company_can_be_matched(company, available_students)
 
 def test_company_has_max_matches_true():
     company = Company('A', 1, ['0', '1'])
-    matches = {Student('0', '0', []): company}
+    matches = {Student('0', []): company}
     assert company_has_max_matches(company, matches)
 
 def test_company_has_max_matches_false():
     company = Company('A', 1, ['0', '1'])
-    matches = {Student('0', '0', []): Company('B', 1, ['0', '1'])}
+    matches = {Student('0', []): Company('B', 1, ['0', '1'])}
     assert not company_has_max_matches(company, matches)
     
 def test_mutual_match():
@@ -43,8 +43,8 @@ def test_mutual_match():
     co_B = Company('B', 1, ['1', '0'])
     companies = [co_A, co_B]
     
-    student_0 = Student('0', '0', ['A', 'B'])
-    student_1 = Student('1', '1', ['B', 'A'])
+    student_0 = Student('0', ['A', 'B'])
+    student_1 = Student('1', ['B', 'A'])
     students = [student_0, student_1]
     
     matches, unmatched_companies, unmatched_students = mutual_match(companies, students)
@@ -58,8 +58,8 @@ def test_mutual_match_two_rounds():
     co_B = Company('B', 1, ['0', '1'])
     companies = [co_A, co_B]
  
-    student_0 = Student('0', '0', ['A', 'B'])
-    student_1 = Student('1', '1', ['B', 'A'])
+    student_0 = Student('0', ['A', 'B'])
+    student_1 = Student('1', ['B', 'A'])
     students = [student_0, student_1]    
 
     matches, unmatched_companies, unmatched_students = mutual_match(companies, students)
@@ -73,8 +73,8 @@ def test_no_mutual_match():
     co_C = Company('C', 1, ['0', '1'])
     companies = [co_A, co_B, co_C]
  
-    student_0 = Student('0', '0', ['A', 'B'])
-    student_1 = Student('1', '1', ['B', 'A'])
+    student_0 = Student('0', ['A', 'B'])
+    student_1 = Student('1', ['B', 'A'])
     students = [student_0, student_1]   
     
     matches, unmatched_companies, unmatched_students = mutual_match(companies, students)
@@ -87,10 +87,10 @@ def test_more_than_one_mutual_match():
     co_B = Company('B', 1, ['0', '1'])
     companies = [co_A, co_B]
     
-    student_0 = Student('0', '0', ['A', 'B'])
-    student_1 = Student('1', '1', ['B', 'A'])
-    student_2 = Student('2', '2', ['A'])
-    student_3 = Student('3', '3', ['A'])
+    student_0 = Student('0', ['A', 'B'])
+    student_1 = Student('1', ['B', 'A'])
+    student_2 = Student('2', ['A'])
+    student_3 = Student('3', ['A'])
     students = [student_0, student_1, student_2, student_3]
 
     matches, unmatched_companies, unmatched_students = mutual_match(companies, students)
@@ -102,8 +102,8 @@ def test_unilateral_match():
     co_AA = Company('AA', 1, ['0', '1'])
     companies = [co_AA]
     
-    student_0 = Student('0', '0', ['A', 'B'])
-    student_1 = Student('1', '1', ['B', 'A'])
+    student_0 = Student('0', ['A', 'B'])
+    student_1 = Student('1', ['B', 'A'])
     students = [student_0, student_1]   
     
     num_matches = {co_AA: 0}
@@ -134,7 +134,7 @@ def test_unilateral_match_unmatched_company():
 def test_unilateral_match_unmatched_student():
     companies = []
     
-    student_0 = Student('0', '0', ['A', 'B'])
+    student_0 = Student('0', ['A', 'B'])
     students = [student_0]
     
     co_AA = Company('AA', 1, ['0', '1'])
