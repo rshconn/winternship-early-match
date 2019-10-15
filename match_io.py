@@ -1,6 +1,7 @@
 import csv
 from match import Company, Student 
 
+ # TODO: Handle spaces
 
 def load_company_responses(filepath, name_field, student_fields):
     """
@@ -15,6 +16,7 @@ def load_company_responses(filepath, name_field, student_fields):
     -------
     list of Company
     """
+    print('Loading company responses')
     companies = []
     with open(filepath) as f:
         reader = csv.DictReader(f)
@@ -28,7 +30,7 @@ def load_company_responses(filepath, name_field, student_fields):
                 if student:
                     ranked_students.append(student)
             # TODO: max_matches
-            companies.append(Company(name, 0, ranked_students))
+            companies.append(Company(name, 2, ranked_students))
     return companies
 
 def load_student_responses(filepath, name_field, company_fields):
@@ -44,6 +46,7 @@ def load_student_responses(filepath, name_field, company_fields):
     list of Student
     """
     # Note: Should already have students who do not want to be matched & Natures Plus matches filtered out
+    print('Loading student responses')
     students = []
     with open(filepath) as f:
         reader = csv.DictReader(f)
@@ -58,15 +61,49 @@ def load_student_responses(filepath, name_field, company_fields):
             students.append(Student(name, ranked_companies))
     return students
     
+
+def format_student_name(name):
+    """
+    Parameters
+    ----------
+    name : str
+    """
+    # TODO
+    pass
     
-def write_matches(matches):
+    
+def write_matches(matches, output_prefix):
     """"
     Parameters
     ----------
     matches : dict
         {Student: Company}
+    output_prefix : str
     """
-    with open('matches.csv', 'w') as f:
+    print('Writing matches')
+    with open(f'{output_prefix}_matches.csv', 'w') as f:
         f.write('student,company\n')
         for student in matches:
             f.write(f'{student.name}, {matches[student].name}\n')
+
+def write_unmatched_companies(unmatched_companies, output_prefix):
+    """
+    Parameters
+    ----------
+    unmatched_companies : list of Company
+    output_prefix : str
+    """
+    print('Writing unmatched companies')
+    with open(f'{output_prefix}_unmatched_companies.csv', 'w') as f:
+        f.write('company,num_matches\n')
+        for company in unmatched_company:
+            f.write(f'{company.name}, {matches[student].name}\n')
+
+def write_unmatched_students(unmatched_students, output_prefix):
+     """
+    Parameters
+    ----------
+    unmatched_students : list of Company
+    output_prefix : str
+    """
+    pass

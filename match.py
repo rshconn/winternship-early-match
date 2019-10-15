@@ -20,7 +20,6 @@ class Student:
         Parameters
         ----------
         name : str
-        unique_id : str
         ranked_companies : list of str
             In order list of the names of ranked companies 
         """
@@ -28,20 +27,27 @@ class Student:
         self.ranked_companies = ranked_companies
 
 
-def find_first_available_student(ranked_students, available_students):
+def find_first_available_student(ranked_students, available_students, mutual=False, company_name=''):
     """
     Parameters
     ---------
     ranked_students : list of str
     available_students : list of Student
+    mutual : bool
+    company_name
 
     Returns
     ------
     Student or None
 
     """
+    # TODO: Handle spaces
     for student_name in ranked_students:
-        student = next((student for student in available_students if student.name == student_name), None)
+        if mutual:
+            student = next((student for student in available_students if 
+                            student.name == student_name and company_name in student.ranked_companies), None)
+        else: 
+            student = next((student for student in available_students if student.name == student_name), None)
         if student:
             return student
     return None
@@ -106,6 +112,7 @@ def mutual_match(companies, students):
     -------
     dict, list of Company, list of Student
     """
+    print('Matching')
     matches = {}    # {Student : Company}
     unmatched_companies = []
     unmatched_students = []
@@ -114,7 +121,10 @@ def mutual_match(companies, students):
         
         for company in companies:
             if company_can_be_matched(company, students):
-                student = find_first_available_student(company.ranked_students, students)
+                student = find_first_available_student(company.ranked_students,
+                                                       students,
+                                                       mutual=True,
+                                                       company_name=company.name)
                 
                 if student:
                     company_choice = find_first_available_company(student.ranked_companies, companies)
@@ -147,13 +157,15 @@ def mutual_match(companies, students):
                     unmatched_companies.append(company)
                     
             else:   # None of company's remaining ranked students have ranked them
+                import pdb; pdb.set_trace()
                 print(f'Cannot match {company.name}')
                 unmatched_companies.append(company)
                 
-
         companies = available_companies
+   
     # Add any remaining students
     unmatched_students = unmatched_students + students
+    import pdb; pdb.set_trace()
     return matches, unmatched_companies, unmatched_students
 
 
@@ -171,6 +183,7 @@ def unilateral_match(unmatched_companies, unmatched_students, num_matches):
     -------
     dict, list of Company, list of Student
     """
+    print('Assigning unilateral matches')
     matches = {}    # {Student: Company}
     for company in unmatched_companies:
         if num_matches[company] < 1:
@@ -183,7 +196,7 @@ def unilateral_match(unmatched_companies, unmatched_students, num_matches):
                 print(f'No unmatched students available for {company.name}')
         else:
             unmatched_companies.remove(company)
-            print(f'{company.name} has {len(company.matches)}')
+            print(f'{company.name} has {num_matches[company]}')
     
     return matches, unmatched_companies, unmatched_students
 
