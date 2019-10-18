@@ -2,7 +2,7 @@ import click
 from collections import Counter
 
 from match_io import (load_company_responses, load_student_responses, write_matches,
-                      write_unmatched_companies, write_unmatched_companies)
+                      write_unmatched_companies, write_unmatched_students)
 from match import mutual_match, unilateral_match
 
 @click.command()
@@ -31,7 +31,7 @@ def main(companies_filepath, students_filepath, company_name_field,
     all_matches = {**mutual_matches, **unilateral_matches}
     write_matches(all_matches, output_prefix)
     write_unmatched_students(unmatched_students, output_prefix)
-    write_unmatched_companies(unmatched_students, output_prefix)
+    write_unmatched_companies(unmatched_companies, all_matches, output_prefix)
     
 if __name__ == "__main__":
     main()

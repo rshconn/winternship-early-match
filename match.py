@@ -41,7 +41,6 @@ def find_first_available_student(ranked_students, available_students, mutual=Fal
     Student or None
 
     """
-    # TODO: Handle spaces
     for student_name in ranked_students:
         if mutual:
             student = next((student for student in available_students if 
@@ -157,7 +156,6 @@ def mutual_match(companies, students):
                     unmatched_companies.append(company)
                     
             else:   # None of company's remaining ranked students have ranked them
-                import pdb; pdb.set_trace()
                 print(f'Cannot match {company.name}')
                 unmatched_companies.append(company)
                 
@@ -165,7 +163,6 @@ def mutual_match(companies, students):
    
     # Add any remaining students
     unmatched_students = unmatched_students + students
-    import pdb; pdb.set_trace()
     return matches, unmatched_companies, unmatched_students
 
 
