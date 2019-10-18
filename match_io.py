@@ -48,6 +48,7 @@ def load_company_responses(filepath, name_field, student_fields):
     -------
     list of Company
     """
+    # Note: Remove NaturesPlus from responses first
     print('Loading company responses')
     companies = []
     max_matches = load_max_matches('data/max_matches.csv')
@@ -91,7 +92,6 @@ def load_student_responses(filepath, name_field, company_fields, companies):
     Parameters
     ----------
     filepath : str
-    name_field : str
     company_fields : list of str
     companies : list of Company
     
@@ -155,10 +155,10 @@ def write_unmatched_companies(unmatched_companies, matches, output_prefix):
     print('Writing unmatched companies')
     with open(f'{output_prefix}_unmatched_companies.csv', 'w') as f:
         f.write('company,num_matches,num_open_matches\n')
-        num_matches = Counter(matches.values())
+        num_matches_per_company = Counter(matches.values())
         for company in unmatched_companies:
             name = company.name
-            num_matches = num_matches[company]
+            num_matches = num_matches_per_company[company]
             num_open_matches = company.max_matches - num_matches
             f.write(f'{name},{num_matches},{num_open_matches}\n')
 

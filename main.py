@@ -23,12 +23,10 @@ def main(companies_filepath, students_filepath, company_name_field,
     
   
     mutual_matches, unmatched_companies, unmatched_students = mutual_match(companies, students)
-    
-    num_matches = Counter(mutual_matches.values())
     unilateral_matches, unmatched_companies, unmatched_students = unilateral_match(
-        companies, students, num_matches)
-        
+        unmatched_companies, unmatched_students, mutual_matches)
     all_matches = {**mutual_matches, **unilateral_matches}
+    print(f'Number of matches: {len(all_matches)}')
     write_matches(all_matches, output_prefix)
     write_unmatched_students(unmatched_students, output_prefix)
     write_unmatched_companies(unmatched_companies, all_matches, output_prefix)

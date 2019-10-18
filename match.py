@@ -88,7 +88,7 @@ def company_can_be_matched(company, available_students):
     return False
 
 
-def company_has_max_matches(company, matches):
+def company_has_open_spots(company, matches):
     """
     Parameters
     ----------
@@ -100,7 +100,7 @@ def company_has_max_matches(company, matches):
     bool 
     """
     num_matches = Counter(matches.values())
-    return num_matches[company] >= company.max_matches
+    return num_matches[company] < company.max_matches
     
     
 def mutual_match(companies, students):
@@ -118,13 +118,11 @@ def mutual_match(companies, students):
     matches = {}    # {Student : Company}
     unmatched_companies = []
     unmatched_students = []
-    while len(companies) > 0:
+    while len(companies) > 0:   # Round
         print(f'Number of matches: {len(matches)}')
-        import pdb; pdb.set_trace()
         available_companies = []
         
         for company in companies:
-            print(f'Matching {company.name}')
             if company_can_be_matched(company, students):
                 student = find_first_available_student(company.ranked_students,
                                                        students,
@@ -135,21 +133,13 @@ def mutual_match(companies, students):
                     company_choice = find_first_available_company(student.ranked_companies, companies)
     
                     if company_choice:
-                        print(f'{student.name} wants {company_choice.name}')
-                        if company.name == company_choice.name:
-    
+                        # print(f'{student.name} wants {company_choice.name}')
+                        if company.name in student.ranked_companies:
                             # Assign student to company
                             matches[student] = company
     
                             # Remove student from matching pool
                             students.remove(student)
-                            
-                            # If company still has open spots
-                            if not company_has_max_matches(company, matches):
-                                available_companies.append(company)
-                                
-                        else:   # Student's first available choice is not company
-                                available_companies.append(company)
     
                     else:   # None of student's ranked companies remain
                         print(f"Cannot match {student}")
@@ -161,7 +151,10 @@ def mutual_match(companies, students):
                 else:   # None of company's ranked students remain
                     print(f'Cannot match {company.name}')
                     unmatched_companies.append(company)
-                    
+                
+                if company_has_open_spots(company, matches):
+                    available_companies.append(company)
+    
             else:   # None of company's remaining ranked students have ranked them
                 print(f'Cannot match {company.name}')
                 unmatched_companies.append(company)
@@ -173,34 +166,36 @@ def mutual_match(companies, students):
     return matches, unmatched_companies, unmatched_students
 
 
-def unilateral_match(unmatched_companies, unmatched_students, num_matches):
+def unilateral_match(companies, students, matches):
     """Match unmatched students with companies that have ranked those students
     
     Parameters
     ----------
-    unmatched_companies : list of Company
-    unmatched_students : list of Student
-    num_matches : dict
-        {Company: # of existing matches}
+    companies : list of Company
+    students : list of Student
+    matches : dict
+        {Student : Company}
 
     Returns
     -------
     dict, list of Company, list of Student
     """
     print('Assigning unilateral matches')
-    matches = {}    # {Student: Company}
-    for company in unmatched_companies:
-        if num_matches[company] < 1:
-            student = find_first_available_student(company.ranked_students, unmatched_students)
-            if student:
+    new_matches = {}    # {Student: Company}
+    unmatched_companies = []
+    while len(companies) > 0 and len(students) > 0:
+        for company in companies:
+            student = find_first_available_student(company.ranked_students, students)
+            if student: # Unilateral match 
                 matches[student] = company
-                unmatched_students.remove(student)
-                unmatched_companies.remove(company)
+                students.remove(student)
+                
+                if not company_has_open_spots(company, {**matches, **new_matches}):
+                    companies.remove(company)
+                
             else:
                 print(f'No unmatched students available for {company.name}')
-        else:
-            unmatched_companies.remove(company)
-            print(f'{company.name} has {num_matches[company]}')
-    
-    return matches, unmatched_companies, unmatched_students
+                companies.remove(company)
+                unmatched_companies.append(company)
+    return new_matches, unmatched_companies, students
 

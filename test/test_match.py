@@ -1,5 +1,5 @@
 from match import (Company, Student, find_first_available_company, find_first_available_student,
-                   company_can_be_matched, company_has_max_matches, mutual_match, unilateral_match)
+                   company_can_be_matched, company_has_open_spots, mutual_match, unilateral_match)
 
 def test_find_first_available_company():
     ranked_companies = ['A', 'B', 'C']
@@ -28,15 +28,15 @@ def test_company_can_be_matched_false():
     available_students = [Student('0', ['C', 'B'])]
     assert not company_can_be_matched(company, available_students)
 
-def test_company_has_max_matches_true():
+def test_company_has_open_spots_false():
     company = Company('A', 1, ['0', '1'])
     matches = {Student('0', []): company}
-    assert company_has_max_matches(company, matches)
+    assert not company_has_open_spots(company, matches)
 
-def test_company_has_max_matches_false():
+def test_company_has_open_spots_true():
     company = Company('A', 1, ['0', '1'])
     matches = {Student('0', []): Company('B', 1, ['0', '1'])}
-    assert not company_has_max_matches(company, matches)
+    assert company_has_open_spots(company, matches)
     
 def test_mutual_match():
     co_A = Company('A', 1, ['0', '1'])
@@ -106,10 +106,10 @@ def test_unilateral_match():
     student_1 = Student('1', ['B', 'A'])
     students = [student_0, student_1]   
     
-    num_matches = {co_AA: 0}
+    matches = {Student('test', []): Company('other', 1, ['00', '11'])}
     
     matches, unmatched_companies, unmatched_students = unilateral_match(
-        companies, students, num_matches)
+        companies, students, matches)
         
     assert matches == {student_0: co_AA}
     assert unmatched_companies == []
