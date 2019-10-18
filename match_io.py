@@ -65,14 +65,35 @@ def load_company_responses(filepath, name_field, student_fields):
             companies.append(Company(name, max_matches[name], ranked_students))
     return companies
    
+
+def prune_companies(student_name, ranked_companies, companies):
+    """
+    Parameters
+    ----------
+    student_name : str
+    ranked_companies : list of str
+    companies : list of Company
     
-def load_student_responses(filepath, name_field, company_fields):
+    Returns
+    ------
+    list of str 
+    """
+    pruned_companies = []
+    for company_name in ranked_companies:
+        company_students = next((co.ranked_students for co in companies if co.name == company_name), None)
+        if company_students is None or student_name in company_students:
+            pruned_companies.append(company_name)
+    return pruned_companies
+
+
+def load_student_responses(filepath, name_field, company_fields, companies):
     """
     Parameters
     ----------
     filepath : str
     name_field : str
     company_fields : list of str
+    companies : list of Company
     
     Returns
     -------
@@ -91,7 +112,10 @@ def load_student_responses(filepath, name_field, company_fields):
                 if data[i][field]:
                     ranked_companies = format_string(data[i][field].strip('"')).split(',')
                     break
-            students.append(Student(name, ranked_companies))
+            if ranked_companies[0] =='RubiconMD':
+                print(f'Match {name} with RubiconMD')
+            else:
+                students.append(Student(name, prune_companies(name, ranked_companies, companies)))
     return students
     
     

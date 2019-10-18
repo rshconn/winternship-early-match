@@ -14,6 +14,7 @@ class Company:
         self.max_matches = max_matches
         self.ranked_students = ranked_students
 
+
 class Student:
     def __init__(self, name, ranked_companies):
         """
@@ -25,8 +26,8 @@ class Student:
         """
         self.name = name
         self.ranked_companies = ranked_companies
-
-
+    
+    
 def find_first_available_student(ranked_students, available_students, mutual=False, company_name=''):
     """
     Parameters
@@ -51,6 +52,7 @@ def find_first_available_student(ranked_students, available_students, mutual=Fal
             return student
     return None
 
+
 def find_first_available_company(ranked_companies, available_companies):
     """
     Parameters
@@ -67,6 +69,7 @@ def find_first_available_company(ranked_companies, available_companies):
          if company: 
              return company
     return None
+
 
 def company_can_be_matched(company, available_students):
     """
@@ -116,9 +119,12 @@ def mutual_match(companies, students):
     unmatched_companies = []
     unmatched_students = []
     while len(companies) > 0:
+        print(f'Number of matches: {len(matches)}')
+        import pdb; pdb.set_trace()
         available_companies = []
         
         for company in companies:
+            print(f'Matching {company.name}')
             if company_can_be_matched(company, students):
                 student = find_first_available_student(company.ranked_students,
                                                        students,
@@ -129,6 +135,7 @@ def mutual_match(companies, students):
                     company_choice = find_first_available_company(student.ranked_companies, companies)
     
                     if company_choice:
+                        print(f'{student.name} wants {company_choice.name}')
                         if company.name == company_choice.name:
     
                             # Assign student to company

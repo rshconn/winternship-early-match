@@ -19,9 +19,9 @@ def main(companies_filepath, students_filepath, company_name_field,
     companies = load_company_responses(companies_filepath, company_name_field,
                                        company_ranking_fields.split(','))
     students  = load_student_responses(students_filepath, student_name_field,
-                                       student_ranking_fields.split(','))
+                                       student_ranking_fields.split(','), companies)
     
-    
+  
     mutual_matches, unmatched_companies, unmatched_students = mutual_match(companies, students)
     
     num_matches = Counter(mutual_matches.values())
